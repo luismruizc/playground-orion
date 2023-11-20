@@ -12,13 +12,10 @@ RUN apk add git
 RUN git config --global url."https://${GITHUB_USER}:${GITHUB_TOKEN}@github.com".insteadOf "https://github.com"
 RUN apk add build-base musl-dev
 
-COPY go-secret-aws/go.mod go-secret-aws/go.sum ./
+COPY go-basic/go.mod ./
 RUN go mod download -x
+COPY go-basic/main.go ./main.go
 
-COPY go-secret-aws/main.go ./main.go
-# COPY ./internal ./internal
-
-# RUN go get -d -v cmd/api
 RUN GOOS=linux GOARCH=amd64 go build -a -v -tags musl -o out ./main.go
 
 FROM public.ecr.aws/docker/library/alpine:3.16.0
